@@ -1,27 +1,32 @@
 import { useState } from "react";
 
 const HikeForm = (props) => {
-  const [formData, setFormData] = useState({
+  const initialState = {
     name: "",
     location: "",
     length: "",
     time: "",
-    notes: "",
-  });
+    notes: ""
+  }
+  const [formData, setFormData] = useState(props.selected ? props.selected : initialState)
 
   const handleChange = (evt) => {
     setFormData({ ...formData, [evt.target.name]: evt.target.value });
   };
 
   const handleSubmitForm = (evt) => {
-    evt.preventDegault();
-    props.handleAddHike(formData);
-    setFormData({ name: "", location: "", length: "", time: "", notes: "" });
+    evt.preventDefault();
+    if (props.selected) {
+      props.handleUpdateHike(formData, props.selected._id);
+    } else {
+      props.handleAddHike(formData);
+    }
   };
+ 
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmitForm}>
         <label htmlFor="name"> Name </label>
         <input
           id="name"
@@ -61,7 +66,7 @@ const HikeForm = (props) => {
           value={formData.notes}
           onChange={handleChange}
         />
-        <button type="sumbit">Add New Hike</button>
+        <button type="sumbit"> {props.selected ? 'Update Hike' : 'Add New Hike'} </button>
       </form>
     </div>
   );
