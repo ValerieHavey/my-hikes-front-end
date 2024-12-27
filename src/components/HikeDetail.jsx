@@ -4,17 +4,20 @@ const HikeDetail = (props) => {
   if (!props.selected)
     return (
       <div>
-        <h1>No Details</h1>
+        <h3>Select a hike to show details</h3>
       </div>
     );
   return (
     <div>
-      <h1>{props.selected.name}</h1>
-      <h2>Location: {props.selected.location}</h2>
-      <h2>
+      <h2>{props.selected.name}</h2>
+      <h3>Trailhead location: {props.selected.location}</h3>
+      <h3>
         Length: {props.selected.length} mile
         {props.selected.length > 1 ? "s" : ""}
-      </h2>
+      </h3>
+      <h3>
+        Time to complete: {props.selected.time} hour(s)
+      </h3>
 
       <div className="button-container">
       <button onClick={() => props.handleFormView(props.selected)}>Edit</button>
