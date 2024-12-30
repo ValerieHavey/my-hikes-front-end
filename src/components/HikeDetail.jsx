@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const HikeDetail = (props) => {
+  const [gearListOpen, setGearListOpen] = useState(false);
+  const handleToggleGearList = () => {
+    setGearListOpen ((prev) => {
+      return !prev
+    })
+  } 
   if (!props.selected)
     return (
       <div>
@@ -24,7 +31,9 @@ const HikeDetail = (props) => {
       <button onClick={() => props.handleRemoveHike(props.selected._id)}>
         Delete
       </button>
+      <button onClick={() => handleToggleGearList()}>Add Gear</button>
     </div>
+    {gearListOpen && <div> gearList </div>}
     </div>
   );
 };
