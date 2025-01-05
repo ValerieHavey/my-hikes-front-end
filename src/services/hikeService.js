@@ -58,4 +58,19 @@ const deleteHike = async (hikeId) => {
   }
 };
 
-export { index, create, updateHike, deleteHike };
+const addGear = async(gearData, hikeId) => {
+  try {
+    const addedGear = await fetch(`${BASE_URL}/${hikeId}/gears`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(gearData),
+    });
+    return addedGear.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { index, create, updateHike, deleteHike, addGear };

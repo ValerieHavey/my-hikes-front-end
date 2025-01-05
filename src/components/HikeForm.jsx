@@ -60,7 +60,8 @@ const HikeForm = (props) => {
           required
         />
         <label htmlFor="notes"> Notes </label>
-        <input
+        <textarea
+          type="text"
           id="notes"
           name="notes"
           value={formData.notes}

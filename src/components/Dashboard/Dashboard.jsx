@@ -1,8 +1,11 @@
 import HikeList from "../HikeList";
 import HikeDetail from "../HikeDetail";
 import HikeForm from "../HikeForm";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import * as hikeService from "../../services/hikeService";
+import * as gearService from "../../services/gearService";
+import GearList from "../GearList";
+
 
 const Dashboard = ({ user }) => {
   const [hikeList, setHikeList] = useState([]);
@@ -23,11 +26,50 @@ const Dashboard = ({ user }) => {
     };
     fetchHikes();
   }, []);
+  
+  const handleAddGear = async (gearData) => {
+    const addedGear = await hikeService.addGear(gearData, selected)
+    setHikeList((prev) => {
+      return prev.map((hike) => {
+        if (hike._id !== selected) {
+          return hike
+        }
+        return {
+          ...hike,
+          gears:[...hike.gears, addedGear]
+        }
+      })
+    })
+  }
+
+  const handleUpdateGear = async (gearData, gearId) => {
+    const updatedGear = await gearService.updateGear(gearData, gearId)
+    setHikeList((prev) => {
+      return prev.map((hike) => {
+        if (hike._id !== updatedGear.hike) {
+          console.log('Not ', hike._id);
+          return hike
+        } 
+        console.log('yes', hike._id);
+        console.log(hike.gears, gearId)
+        return {
+          ...hike,
+          gears:hike.gears.map((gear) => {
+            return gear._id === gearId ? updatedGear : gear
+          })
+        }
+      })
+    })
+  }
 
   const updateSelected = (hike) => {
-    setSelected(hike);
+    setSelected(hike._id);
   };
-
+  const selectedHike = useMemo(() => {
+    return hikeList.find((hike) => {
+      return hike._id === selected
+    })
+  }, [hikeList, selected])
   const handleFormView = (hike) => {
     if (!hike.name) setSelected(null);
     setIsFormOpen(!isFormOpen);
@@ -55,11 +97,11 @@ const Dashboard = ({ user }) => {
         throw new Error(updateHike.error);
       }
 
-      const updatedHikeList = hikeList.map((hike) =>
-        hike._id !== updateHike._id ? hike : updateHike
-      );
-      setHikeList(updatedHikeList);
-      setSelected(updateHike);
+      setHikeList((prev) => { 
+        return prev.map((hike) =>
+          hike._id !== updateHike._id ? hike : updateHike
+        );
+      });
       setIsFormOpen(false);
     } catch (error) {
       console.log(error);
@@ -74,7 +116,21 @@ const Dashboard = ({ user }) => {
         throw new Error(deletedHike.error);
       }
 
-      setHikeList(hikeList.filter((hike) => hike._id !== deletedHike._id));
+      setHikeList((prev)=> prev.filter((hike) => hike._id !== deletedHike._id));
+      setSelected(null);
+      setIsFormOpen(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemoveGear = async (gearId) => {
+    try {
+      const deletedGear = await gearService.deleteGear(gearId);
+      if (deletedGear.error) {
+        throw new Error(deletedGear.error);
+      }
+      setGearList(GearList.filter((gear) => gear._id !== deletedGear._id));
       setSelected(null);
       setIsFormOpen(false);
     } catch (error) {
@@ -94,14 +150,16 @@ const Dashboard = ({ user }) => {
       {isFormOpen ? (
         <HikeForm
           handleAddHike={handleAddHike}
-          selected={selected}
+          selected={selectedHike}
           handleUpdateHike={handleUpdateHike}
         />
       ) : (
         <HikeDetail
-          selected={selected}
+          selected={selectedHike}
           handleFormView={handleFormView}
           handleRemoveHike={handleRemoveHike}
+          onAddGear={handleAddGear}
+          onUpdateGear={handleUpdateGear}
         />
       )}
     </main>

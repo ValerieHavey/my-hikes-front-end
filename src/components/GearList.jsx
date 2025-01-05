@@ -1,64 +1,40 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import GearForm from "./GearForm";
 
 const GearList = (props) => {
-  const initialState = {
-    name: "",
-    category: "",
-    brand: "",
-    notes: ""
+  const [selected, setSelected] = useState(null);
+  const selectedGear = useMemo(() => {
+    return props.gearList.find((gear) => {
+      return gear._id === selected;
+    });
+  }, [props.gearList, selected]);
+  const handleUpdateGear= (...args) => {
+    props.onUpdateGear(...args)
+    setSelected(null);
   }
-  const [formData, setFormData] = useState(props.selected ? props.selected : initialState)
-
-  const handleChange = (evt) => {
-    setFormData({ ...formData, [evt.target.name]: evt.target.value });
-  };
-
-  const handleSubmitForm = (evt) => {
-    evt.preventDefault();
-    if (props.selected) {
-      props.handleUpdateGearList(formData, props.selected._id);
-    } else {
-      props.handleAddGear(formData);
-    }
-  };
- 
 
   return (
     <div>
-      <form onSubmit={handleSubmitForm}>
-        <label htmlFor="name"> Name </label>
-        <input
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
+      <ul>
+        {props.gearList.map((gear) => {
+          return (
+            <li onClick={() => setSelected(gear._id)} key={gear._id}>
+              {" "}
+              {gear.name} - {gear.category} - {gear.brand} -{" "}
+              {gear.notes || "No notes"}{" "}
+            </li>
+          );
+        })}
+      </ul>
+      {selectedGear ? (
+        <GearForm
+          key={"update-gear-" + selected}
+          onUpdateGear={handleUpdateGear}
+          selected={selectedGear}
         />
-        <label htmlFor="category"> Category </label>
-        <input
-          id="category"
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          required
-        />
-        <label htmlFor="brand"> Brand </label>
-        <input
-          id="brand"
-          name="brand"
-          value={formData.brand}
-          onChange={handleChange}
-          required
-        />
-        <label htmlFor="notes"> Notes </label>
-        <input
-          id="notes"
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-        />
-        <button type="sumbit"> {props.selected ? 'Update Gear' : 'Add New Gear'} </button>
-      </form>
+      ) : (
+        <GearForm key="add-gear" onAddGear={props.onAddGear} />
+      )}
     </div>
   );
 };
