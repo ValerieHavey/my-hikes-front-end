@@ -12,6 +12,10 @@ const GearList = (props) => {
     props.onUpdateGear(...args)
     setSelected(null);
   }
+  const handleRemoveGear = () => {
+    props.onRemoveGear(selected)
+    setSelected(null);
+  }
 
   return (
     <div>
@@ -19,19 +23,21 @@ const GearList = (props) => {
         {props.gearList.map((gear) => {
           return (
             <li onClick={() => setSelected(gear._id)} key={gear._id}>
-              {" "}
               {gear.name} - {gear.category} - {gear.brand} -{" "}
-              {gear.notes || "No notes"}{" "}
+              {gear.notes || "No notes"}
             </li>
           );
         })}
       </ul>
       {selectedGear ? (
+        <>
         <GearForm
           key={"update-gear-" + selected}
           onUpdateGear={handleUpdateGear}
           selected={selectedGear}
         />
+        <button onClick={handleRemoveGear}>Delete Gear</button>
+        </>
       ) : (
         <GearForm key="add-gear" onAddGear={props.onAddGear} />
       )}

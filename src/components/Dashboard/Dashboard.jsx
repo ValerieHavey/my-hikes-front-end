@@ -62,6 +62,30 @@ const Dashboard = ({ user }) => {
     })
   }
 
+  const handleRemoveGear = async (gearId) => {
+    try {
+      const deletedGear = await gearService.deleteGear(gearId);
+      if (deletedGear.error) {
+        throw new Error(deletedGear.error);
+      }
+      setHikeList((prev) => {
+        return prev.map((hike) => {
+          if (hike._id !== deletedGear.hike) {
+            return hike
+          } 
+          return {
+            ...hike,
+            gears:hike.gears.filter((gear) => {
+              return gear._id !== deletedGear._id
+            })
+          }
+        })
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const updateSelected = (hike) => {
     setSelected(hike._id);
   };
@@ -124,20 +148,6 @@ const Dashboard = ({ user }) => {
     }
   };
 
-  const handleRemoveGear = async (gearId) => {
-    try {
-      const deletedGear = await gearService.deleteGear(gearId);
-      if (deletedGear.error) {
-        throw new Error(deletedGear.error);
-      }
-      setGearList(GearList.filter((gear) => gear._id !== deletedGear._id));
-      setSelected(null);
-      setIsFormOpen(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <main>
       <h1>Welcome, {user.username}</h1>
@@ -160,6 +170,7 @@ const Dashboard = ({ user }) => {
           handleRemoveHike={handleRemoveHike}
           onAddGear={handleAddGear}
           onUpdateGear={handleUpdateGear}
+          onRemoveGear={handleRemoveGear}
         />
       )}
     </main>

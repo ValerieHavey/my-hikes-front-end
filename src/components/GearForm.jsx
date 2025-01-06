@@ -65,12 +65,7 @@ const GearForm = (props) => {
         onChange={handleChange}
       />
       <button type="submit">
-        {" "}
-        {props.selected ? "Update Gear" : "Add New Gear"}{" "}
-      </button>
-      <button onClick={() => handleRemoveGear(gearId)}>
-        {" "}
-        Delete Gear{" "}
+        {props.selected ? "Update Gear" : "Add New Gear"}
       </button>
     </form>
   );

@@ -36,7 +36,7 @@ const HikeDetail = (props) => {
       </button>
       <button onClick={() => handleToggleGearList()}>View Gear</button>
     </div>
-    {gearListOpen && <GearList onAddGear={props.onAddGear} gearList={props.selected.gears} onUpdateGear={props.onUpdateGear} />}
+    {gearListOpen && <GearList onAddGear={props.onAddGear} gearList={props.selected.gears} onUpdateGear={props.onUpdateGear} onRemoveGear={props.onRemoveGear} />}
     </div>
   );
 };
