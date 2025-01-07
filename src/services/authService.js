@@ -1,4 +1,5 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_SERVER_URL;
+const BACKEND_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
+
 
 const signup = async (formData) => {
   try {
@@ -14,7 +15,7 @@ const signup = async (formData) => {
     return json
   } catch (err) {
     console.log(err);
-    throw err;
+    throw (err);
   }
 };
 
