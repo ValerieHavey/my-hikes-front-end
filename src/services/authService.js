@@ -9,10 +9,16 @@ const signup = async (formData) => {
       body: JSON.stringify(formData),
     });
     const json = await res.json();
+    if (json.token) {
+      localStorage.setItem('token', json.token);
+
+      const user = JSON.parse(atob(json.token.split('.')[1]));
+
+      return user
+    }
     if (json.err) {
       throw new Error(json.err);
     }
-    return json
   } catch (err) {
     console.log(err);
     throw (err);

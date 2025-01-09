@@ -4,7 +4,6 @@ import HikeForm from "../HikeForm";
 import { useState, useEffect, useMemo } from "react";
 import * as hikeService from "../../services/hikeService";
 import * as gearService from "../../services/gearService";
-import GearList from "../GearList";
 
 
 const Dashboard = ({ user }) => {
@@ -107,7 +106,7 @@ const Dashboard = ({ user }) => {
         throw new Error(newHike.error);
       }
 
-      setHikeList([newHike, ...hikeList]);
+      setHikeList([{...newHike, gears:[]}, ...hikeList]);
       setIsFormOpen(false);
     } catch (error) {
       console.log(error);
@@ -123,7 +122,10 @@ const Dashboard = ({ user }) => {
 
       setHikeList((prev) => { 
         return prev.map((hike) =>
-          hike._id !== updateHike._id ? hike : updateHike
+          hike._id !== updateHike._id ? hike : {
+            ...updateHike,
+            gears:hike.gears,
+          } 
         );
       });
       setIsFormOpen(false);

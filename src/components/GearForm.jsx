@@ -22,6 +22,7 @@ const GearForm = (props) => {
     } else {
       props.onAddGear(formData);
     }
+    setFormData(initialState);
   };
 
   return (
