@@ -49,8 +49,12 @@ const updateHike = async (formData, hikeId) => {
 
 const deleteHike = async (hikeId) => {
   try {
+    const token = localStorage.getItem("token");
     const deleteHike = await fetch(`${BASE_URL}/${hikeId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return deleteHike.json();
   } catch (err) {
