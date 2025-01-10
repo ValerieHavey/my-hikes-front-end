@@ -33,11 +33,12 @@ const create = async (formData) => {
 
 const updateHike = async (formData, hikeId) => {
   try {
-    console.log(hikeId);
+    const token = localStorage.getItem("token");
     const res = await fetch(`${BASE_URL}/${hikeId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(formData),
     });
